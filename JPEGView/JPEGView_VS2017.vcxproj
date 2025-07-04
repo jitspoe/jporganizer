@@ -163,6 +163,7 @@ copy /Y /B $(SolutionDir)JPEGView\Config\symbols.km $(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\sqlite\sqlite3.c" />
     <ClCompile Include="ApplyFilterAVX.cpp">
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AdvancedVectorExtensions</EnableEnhancedInstructionSet>
@@ -251,6 +252,7 @@ copy /Y /B $(SolutionDir)JPEGView\Config\symbols.km $(OutDir)</Command>
     <ClCompile Include="MainDlg.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\sqlite\sqlite3.h" />
     <ClInclude Include="ApplyFilterAVX.h" />
     <ClInclude Include="BasicProcessing.h" />
     <ClInclude Include="Clipboard.h" />
