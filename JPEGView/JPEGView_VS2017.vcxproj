@@ -163,7 +163,9 @@ copy /Y /B $(SolutionDir)JPEGView\Config\symbols.km $(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\sqlite\sqlite3.c" />
+    <ClCompile Include="..\sqlite\sqlite3.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="ApplyFilterAVX.cpp">
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AdvancedVectorExtensions</EnableEnhancedInstructionSet>
@@ -190,7 +192,9 @@ copy /Y /B $(SolutionDir)JPEGView\Config\symbols.km $(OutDir)</Command>
     <ClCompile Include="JPEGImage.cpp" />
     <ClCompile Include="JPEGLosslessTransform.cpp" />
     <ClCompile Include="JPEGProvider.cpp" />
-    <ClCompile Include="JPEGView.cpp" />
+    <ClCompile Include="JPEGView.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="KeyMap.cpp" />
     <ClCompile Include="LocalDensityCorr.cpp" />
     <ClCompile Include="ManageOpenWithDlg.cpp" />
@@ -257,6 +261,7 @@ copy /Y /B $(SolutionDir)JPEGView\Config\symbols.km $(OutDir)</Command>
     <ClInclude Include="BasicProcessing.h" />
     <ClInclude Include="Clipboard.h" />
     <ClInclude Include="dcraw_mod.h" />
+    <ClInclude Include="DebugPrint.h" />
     <ClInclude Include="DesktopWallpaper.h" />
     <ClInclude Include="DirectoryWatcher.h" />
     <ClInclude Include="EXIFHelpers.h" />

@@ -1,11 +1,17 @@
 // JPEGView.cpp : main entry point for JPEGView.exe
 
+
+#include "../sqlite/sqlite3.h"
+
 #include "stdafx.h"
 #include <locale.h>
+#include <Windows.h>
 #include <gdiplus.h>
+#include <cfloat>
 #include "resource.h"
 #include "MainDlg.h"
 #include "SettingsProvider.h"
+#include "DebugPrint.h"
 
 #ifdef DEBUG
 #include <dbghelp.h>
@@ -177,10 +183,25 @@ static LONG WINAPI CrashHandler(EXCEPTION_POINTERS * pExceptionInfo)
 }
 #endif
 
+void test_sqlite()
+{
+	sqlite3* db;
+	int ret = sqlite3_open("test.db", &db);
+	if (ret) {
+		DEBUGPRINT("sqlite returned %d\n", ret);
+		return;
+	}
+	else {
+		DEBUGPRINT("sqlite db opened.\n");
+		sqlite3_close(db);
+		db = NULL;
+	}
+}
+
 int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lpstrCmdLine, int /*nCmdShow*/)
 {
 	HRESULT hRes = ::CoInitialize(NULL);
-
+	test_sqlite();
 #ifdef DEBUG
 	::InitializeCriticalSection(&s_lock);
 
