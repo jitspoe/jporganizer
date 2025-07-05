@@ -18,6 +18,7 @@ class CPanelMgr;
 class CEXIFDisplayCtl;
 class CImageProcPanelCtl;
 class CNavigationPanelCtl;
+class CTagPanelCtl;
 class CRotationPanelCtl;
 class CTiltCorrectionPanelCtl;
 class CUnsharpMaskPanelCtl;
@@ -312,6 +313,7 @@ private:
 	CZoomNavigatorCtl* m_pZoomNavigatorCtl;
 	CImageProcPanelCtl* m_pImageProcPanelCtl;
 	CNavigationPanelCtl* m_pNavPanelCtl;
+	CTagPanelCtl* m_pTagPanelCtl;
 	CEXIFDisplayCtl* m_pEXIFDisplayCtl;
 	CWndButtonPanelCtl* m_pWndButtonPanelCtl;
 	CInfoButtonPanelCtl* m_pInfoButtonPanelCtl;

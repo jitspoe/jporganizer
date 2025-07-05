@@ -47,6 +47,8 @@
 #include "EXIFDisplayCtl.h"
 #include "NavigationPanelCtl.h"
 #include "NavigationPanel.h"
+#include "TagPanelCtl.h"
+#include "TagPanel.h"
 #include "KeyMap.h"
 #include "JPEGLosslessTransform.h"
 #include "DirectoryWatcher.h"
@@ -276,6 +278,7 @@ CMainDlg::CMainDlg(bool bForceFullScreen) {
 	m_pUnsharpMaskPanelCtl = NULL;
 	m_pImageProcPanelCtl = NULL;
 	m_pNavPanelCtl = NULL;
+	m_pTagPanelCtl = NULL;
 	m_pCropCtl = new CCropCtl(this);
 	m_pKeyMap = new CKeyMap(); // routine to load the keymap, it's not as simple as just loading one file anymore, but all logic handled by CKeyMap
 	m_pPrintImage = new CPrintImage(CSettingsProvider::This().PrintMargin(), CSettingsProvider::This().DefaultPrintWidth());
@@ -303,8 +306,18 @@ void CMainDlg::SetStartupInfo(LPCTSTR sStartupFile, int nAutostartSlideShow, Hel
 	if (nDisplayMonitor >= 0) CSettingsProvider::This().SetMonitorOverride(nDisplayMonitor);
 }
 
+#include <dwmapi.h>
+#pragma comment(lib, "dwmapi.lib")
+
+void DisableRoundedCorners(HWND hwnd)
+{
+	DWORD cornerPreference = 1; // DWMWCP_DONOTROUND
+	DwmSetWindowAttribute(hwnd, 33 /* DWMWA_WINDOW_CORNER_PREFERENCE */, &cornerPreference, sizeof(cornerPreference));
+}
+
 LRESULT CMainDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/) {	
 	UpdateWindowTitle();
+	DisableRoundedCorners(this->m_hWnd);
 
 	// set the scaling of the screen (DPI) compared to 96 DPI (design value)
 	CPaintDC dc(this->m_hWnd);
@@ -346,6 +359,10 @@ LRESULT CMainDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
 	// Create navigation panel
 	m_pNavPanelCtl = new CNavigationPanelCtl(this, m_pImageProcPanelCtl->GetPanel(), &m_bFullScreenMode);
 	m_pPanelMgr->AddPanelController(m_pNavPanelCtl);
+
+	// Create tag panel
+	m_pTagPanelCtl = new CTagPanelCtl(this, m_pImageProcPanelCtl->GetPanel(), &m_bFullScreenMode);
+	m_pPanelMgr->AddPanelController(m_pTagPanelCtl);
 
 	// Create window button panel (on top, right)
 	m_pWndButtonPanelCtl = new CWndButtonPanelCtl(this, m_pImageProcPanelCtl->GetPanel());
@@ -680,6 +697,9 @@ LRESULT CMainDlg::OnSize(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BO
 	if (m_pNavPanelCtl != NULL) {
 		m_pNavPanelCtl->AdjustMaximalWidth(m_clientRect.Width() - HelpersGUI::ScaleToScreen(16));
 	}
+	if (m_pTagPanelCtl) {
+		m_pTagPanelCtl->AdjustMaximalWidth(m_clientRect.Width() - HelpersGUI::ScaleToScreen(16));
+	}
 	m_nMouseX = m_nMouseY = -1;
 
 	// keep fit to screen
@@ -721,6 +741,7 @@ LRESULT CMainDlg::OnLoadFileAsynch(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lPar
 	if (lParam == KEY_MAGIC && ::IsWindowEnabled(m_hWnd)) {
 		m_pPanelMgr->CancelModalPanel();
 		GetNavPanelCtl()->HideNavPanelTemporary(true);
+		m_pTagPanelCtl->HideNavPanelTemporary(true);
 		StopMovieMode();
 		StopAnimation();
 		MouseOn();
@@ -2936,6 +2957,7 @@ void CMainDlg::MouseOff() {
 			m_bMouseOn = false;
 		}
 		this->InvalidateRect(m_pNavPanelCtl->PanelRect(), FALSE);
+		this->InvalidateRect(m_pTagPanelCtl->PanelRect(), FALSE);
 	}
 }
 
@@ -2945,6 +2967,9 @@ void CMainDlg::MouseOn() {
 		m_bMouseOn = true;
 		if (m_pNavPanelCtl != NULL) { // can be called very early
 			this->InvalidateRect(m_pNavPanelCtl->PanelRect(), FALSE);
+		}
+		if (m_pTagPanelCtl) {
+			this->InvalidateRect(m_pTagPanelCtl->PanelRect(), FALSE);
 		}
 	}
 }
@@ -2981,7 +3006,10 @@ void CMainDlg::AfterNewImageLoaded(bool bSynchronize, bool bAfterStartup, bool n
 	UpdateWindowTitle();
 	InvalidateHelpDlg();
 	m_pDirectoryWatcher->SetCurrentFile(CurrentFileName(false));
-	if (!m_bIsAnimationPlaying) m_pNavPanelCtl->HideNavPanelTemporary();
+	if (!m_bIsAnimationPlaying) {
+		m_pNavPanelCtl->HideNavPanelTemporary();
+		m_pTagPanelCtl->HideNavPanelTemporary();
+	}
 	m_pPanelMgr->AfterNewImageLoaded();
 	m_pCropCtl->AbortCropping();
 	if (m_pCurrentImage != NULL) m_pCropCtl->SetImageSize(m_pCurrentImage->OrigSize()); // inform CropCtl of the image size for CropImageAR

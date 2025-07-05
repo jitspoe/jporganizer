@@ -20,6 +20,7 @@
 // _CrtDumpMemoryLeaks
 
 CAppModule _Module;
+sqlite3* main_db;
 
 static HWND _HWNDOtherInstance = NULL;
 
@@ -185,16 +186,13 @@ static LONG WINAPI CrashHandler(EXCEPTION_POINTERS * pExceptionInfo)
 
 void test_sqlite()
 {
-	sqlite3* db;
-	int ret = sqlite3_open("test.db", &db);
+	int ret = sqlite3_open("test.db", &main_db);
 	if (ret) {
 		DEBUGPRINT("sqlite returned %d\n", ret);
 		return;
 	}
 	else {
 		DEBUGPRINT("sqlite db opened.\n");
-		sqlite3_close(db);
-		db = NULL;
 	}
 }
 
@@ -282,6 +280,11 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 
 	_Module.Term();
 	::CoUninitialize();
+
+	if (main_db) {
+		sqlite3_close(main_db);
+		DEBUGPRINT("Closed db.\n");
+	}
 
 	return nRet;
 }

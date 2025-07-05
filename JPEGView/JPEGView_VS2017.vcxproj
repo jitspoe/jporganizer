@@ -216,6 +216,8 @@ copy /Y /B $(SolutionDir)JPEGView\Config\symbols.km $(OutDir)</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TagPanel.cpp" />
+    <ClCompile Include="TagPanelCtl.cpp" />
     <ClCompile Include="TiltCorrectionPanel.cpp" />
     <ClCompile Include="TiltCorrectionPanelCtl.cpp" />
     <ClCompile Include="TJPEGWrapper.cpp" />
@@ -304,6 +306,8 @@ copy /Y /B $(SolutionDir)JPEGView\Config\symbols.km $(OutDir)</Command>
     <ClInclude Include="SaveImage.h" />
     <ClInclude Include="SettingsProvider.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TagPanel.h" />
+    <ClInclude Include="TagPanelCtl.h" />
     <ClInclude Include="TiltCorrectionPanel.h" />
     <ClInclude Include="TiltCorrectionPanelCtl.h" />
     <ClInclude Include="TimerEventIDs.h" />
