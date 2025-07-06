@@ -9,7 +9,8 @@ class CTagPanel : public CPanel {
 public:
 	// IDs of the controls on this panel
 	enum {
-		ID_btnHome,
+		ID_btnCustomTag,
+		ID_btnAddTag,
 		ID_btnPrev,
 		ID_gap1,
 		ID_btnNext,
@@ -36,7 +37,7 @@ public:
 	CTagPanel(HWND hWnd, INotifiyMouseCapture* pNotifyMouseCapture, CPanel* pImageProcPanel, CKeyMap* keyMap, bool* pFullScreenMode,
 		DecisionMethod* isCurrentImageFitToScreen, void* pDecisionMethodParam);
 
-	CButtonCtrl* GetBtnHome() { return GetControl<CButtonCtrl*>(ID_btnHome); }
+	CButtonCtrl* GetBtnAddTag() { return GetControl<CButtonCtrl*>(ID_btnAddTag); }
 	CButtonCtrl* GetBtnPrev() { return GetControl<CButtonCtrl*>(ID_btnPrev); }
 	CButtonCtrl* GetBtnNext() { return GetControl<CButtonCtrl*>(ID_btnNext); }
 	CButtonCtrl* GetBtnEnd() { return GetControl<CButtonCtrl*>(ID_btnEnd); }
@@ -61,9 +62,12 @@ protected:
 	virtual void RepositionAll();
 
 private:
+	// Button press handlers
+	static void OnTagButtonPressed(void* pContext, int nParameter, CButtonCtrl& sender);
 	// Painting handlers for the buttons
 	static void PaintHomeBtn(void* pContext, const CRect& rect, CDC& dc);
-	static void PaintHomeBtn2(void* pContext, const CRect& rect, CDC& dc);
+	static void PaintAddTagBtn(void* pContext, const CRect& rect, CDC& dc);
+	static void PaintCustomTagBtn(void* pContext, const CRect& rect, CDC& dc);
 	static void PaintPrevBtn(void* pContext, const CRect& rect, CDC& dc);
 	static void PaintNextBtn(void* pContext, const CRect& rect, CDC& dc);
 	static void PaintEndBtn(void* pContext, const CRect& rect, CDC& dc);

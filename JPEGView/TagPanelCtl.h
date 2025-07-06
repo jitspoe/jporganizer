@@ -61,6 +61,7 @@ private:
 	void StartNavPanelTimer(int nMilliseconds);
 	void MoveMouseCursorToButton(CButtonCtrl & sender, const CRect & oldRect);
 
+	static void OnAddTag(void* pContext, int nParaameter, CButtonCtrl& sender);
 	static void OnGotoImage(void* pContext, int nParameter, CButtonCtrl & sender);
 	static void OnToggleZoomFit(void* pContext, int nParameter, CButtonCtrl & sender);
 	static void OnToggleWindowMode(void* pContext, int nParameter, CButtonCtrl & sender);

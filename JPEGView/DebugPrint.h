@@ -6,7 +6,7 @@
 #ifdef _DEBUG
 #define DEBUGPRINT(kwszDebugFormatString, ...) _DBGPRINT(__FUNCTIONW__, __LINE__, _T(kwszDebugFormatString), __VA_ARGS__)
 
-VOID _DBGPRINT(LPCWSTR kwszFunction, INT iLineNumber, LPCWSTR kwszDebugFormatString, ...) \
+static VOID _DBGPRINT(LPCWSTR kwszFunction, INT iLineNumber, LPCWSTR kwszDebugFormatString, ...) \
 {
     INT cbFormatString = 0;
     va_list args;

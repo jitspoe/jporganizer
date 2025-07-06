@@ -54,6 +54,7 @@
 #include "DirectoryWatcher.h"
 #include "DesktopWallpaper.h"
 #include "PrintImage.h"
+#include "DebugPrint.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Constants
@@ -1477,6 +1478,8 @@ void CMainDlg::ExecuteCommand(int nCommand) {
 		case IDM_LAST:
 			GotoImage(POS_Last);
 			break;
+		case IDM_ADD_TAG:
+			AddTag();
 		case IDM_LOOP_FOLDER:
 		case IDM_LOOP_RECURSIVELY:
 		case IDM_LOOP_SIBLINGS:
@@ -2416,6 +2419,10 @@ void CMainDlg::EndDragging() {
 
 void CMainDlg::GotoImage(EImagePosition ePos) {
 	GotoImage(ePos, 0);
+}
+
+void CMainDlg::AddTag() {
+	DEBUGPRINT("AddTag called.");
 }
 
 void CMainDlg::GotoImage(EImagePosition ePos, int nFlags) {

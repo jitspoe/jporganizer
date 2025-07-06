@@ -7,6 +7,7 @@
 #include "NLS.h"
 #include "KeyMap.h"
 #include "resource.h"
+#include "DebugPrint.h"
 
 #define NAV_PANEL_HEIGHT 32
 #define NAV_PANEL_BORDER 6
@@ -26,9 +27,12 @@ CTagPanel::CTagPanel(HWND hWnd, INotifiyMouseCapture* pNotifyMouseCapture, CPane
 	m_pDecisionMethodParam = pDecisionMethodParam;
 	m_keyMap = keyMap;
 	m_pFullScreenMode = pFullScreenMode;
+	int tagIndex = 0;
 
-	AddUserPaintButton(ID_btnHome, GetTooltip(keyMap, _T("(TESTING) Show first image in folder"), IDM_FIRST), &PaintHomeBtn);
-	AddUserPaintButton(ID_btnHome, GetTooltip(keyMap, _T("(TESTING) Show first image in folder"), IDM_FIRST), &PaintHomeBtn2);
+
+	AddButton(ID_btnCustomTag, _T("Custom tag test button"), OnTagButtonPressed, this, tagIndex);
+	//AddText(tagIndex, _T("Test Tag but with some more words now"), true);
+	AddUserPaintButton(ID_btnAddTag, GetTooltip(keyMap, _T("Add tag"), IDM_ADD_TAG), &PaintAddTagBtn);
 	AddUserPaintButton(ID_btnPrev, GetTooltip(keyMap, _T("Show previous image"), IDM_PREV), &PaintPrevBtn);
 	AddGap(ID_gap1, 4);
 	AddUserPaintButton(ID_btnNext, GetTooltip(keyMap, _T("Show next image"), IDM_NEXT), &PaintNextBtn);
@@ -141,6 +145,12 @@ void CTagPanel::SetScaledWidth(float fScale) {
 	m_nGap = (int)(NAV_PANEL_GAP*m_fDPIScale*fScale);
 }
 
+
+void CTagPanel::OnTagButtonPressed(void* pContext, int nParameter, CButtonCtrl& sender)
+{
+	DEBUGPRINT("Tag button pressed %d\n", nParameter);
+}
+
 void CTagPanel::PaintHomeBtn(void* pContext, const CRect& rect, CDC& dc) {
 	CRect r = Helpers::InflateRect(rect, 0.3f);
 	
@@ -158,21 +168,23 @@ void CTagPanel::PaintHomeBtn(void* pContext, const CRect& rect, CDC& dc) {
 	dc.LineTo(r.right+1, r.bottom);
 }
 
-void CTagPanel::PaintHomeBtn2(void* pContext, const CRect& rect, CDC& dc) {
+void CTagPanel::PaintAddTagBtn(void* pContext, const CRect& rect, CDC& dc) {
 	CRect r = Helpers::InflateRect(rect, 0.3f);
+	int startX = r.left;
+	int startY = (r.top + r.bottom) / 2;
+	dc.MoveTo(startX, startY);
+	dc.LineTo(r.right, startY);
+	startX = (r.left + r.right) / 2;
+	dc.MoveTo(startX, r.top);
+	dc.LineTo(startX, r.bottom);
+}
 
-	dc.MoveTo(r.left, r.top);
-	dc.LineTo(r.left, r.bottom);
-
-	int nX = r.left + (int)(r.Width() * 0.6f);
-
-	dc.MoveTo(nX, r.top);
-	dc.LineTo(nX, r.bottom);
-
-	int nW = r.Height() / 2;
-	dc.MoveTo(r.right, r.top + 1);
-	dc.LineTo(r.right - nW + 1, r.top + nW);
-	dc.LineTo(r.right + 1, r.bottom);
+void CTagPanel::PaintCustomTagBtn(void* pContext, const CRect& rect, CDC& dc) {
+	CFont font;
+	font.CreatePointFont(min(rect.Width() * 6, 160), _T("Courier New"), dc, true, true);
+	HFONT oldFont = dc.SelectFont(font);
+	dc.DrawText(_T("tag"), 1, (LPRECT)&rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOCLIP);
+	dc.SelectFont(oldFont);
 }
 
 

@@ -12,6 +12,7 @@
 #include "RotationPanelCtl.h"
 #include "PanelMgr.h"
 #include "PaintMemDCMgr.h"
+#include "DebugPrint.h"
 
 // Gets the command ID of the file deletion command according to the INI file setting
 static int GetDeleteCommandId() {
@@ -38,7 +39,7 @@ CTagPanelCtl::CTagPanelCtl(CMainDlg* pMainDlg, CPanel* pImageProcPanel, bool* pF
 	m_pMemDCAnimation = NULL;
 	m_hOffScreenBitmapAnimation = NULL;
 	m_pPanel = m_pTagPanel = new CTagPanel(pMainDlg->m_hWnd, this, pImageProcPanel, pMainDlg->GetKeyMap(), pFullScreenMode, &(CMainDlg::IsCurrentImageFitToScreen), pMainDlg);
-	m_pTagPanel->GetBtnHome()->SetButtonPressedHandler(&OnGotoImage, this, CMainDlg::POS_First);
+	m_pTagPanel->GetBtnAddTag()->SetButtonPressedHandler(&OnAddTag, this, 0);
 	m_pTagPanel->GetBtnPrev()->SetButtonPressedHandler(&OnGotoImage, this, CMainDlg::POS_Previous);
 	m_pTagPanel->GetBtnNext()->SetButtonPressedHandler(&OnGotoImage, this, CMainDlg::POS_Next);
 	m_pTagPanel->GetBtnEnd()->SetButtonPressedHandler(&OnGotoImage, this, CMainDlg::POS_Last);
@@ -332,7 +333,12 @@ void CTagPanelCtl::MoveMouseCursorToButton(CButtonCtrl & sender, const CRect & o
 	}
 }
 
-void CTagPanelCtl::OnGotoImage(void* pContext, int nParameter, CButtonCtrl & sender) {
+
+void CTagPanelCtl::OnAddTag(void* pContext, int nParameter, CButtonCtrl& sender) {
+	DEBUGPRINT("OnAddTag called.");
+}
+
+void CTagPanelCtl::OnGotoImage(void* pContext, int nParameter, CButtonCtrl& sender) {
 	CTagPanelCtl* pThis = (CTagPanelCtl*)pContext;
 	CRect oldRect = pThis->GetPanel()->PanelRect();
 	pThis->m_pMainDlg->GotoImage((CMainDlg::EImagePosition)nParameter);

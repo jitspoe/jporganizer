@@ -320,6 +320,11 @@
 #define IDM_FIRST_OPENWITH_CMD  22100
 #define IDM_LAST_OPENWITH_CMD   22199
 
+#define IDM_ADD_TAG 23000
+#define IDM_FIRST_TAG 23100 // Custom tag button
+#define IDM_LAST_TAG 23600 // All custom tags will have to fit in this range
+
+
 // in the main menu
 // these position must be changed if menu items are inserted
 #define SUBMENU_POS_OPENWITH 3
