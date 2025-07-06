@@ -1,0 +1,26 @@
+jporganizer todo
+
+- tags
+	CTagPanelCtl
+		Dynamically add tag buttons
+
+void CInfoButtonPanel::PaintInfoBtn(void* pContext, const CRect& rect, CDC& dc) {
+	CFont font;
+	font.CreatePointFont(min(rect.Width() * 6, 160), _T("Courier New"), dc, true, true);
+	HFONT oldFont = dc.SelectFont(font);
+	dc.DrawText(_T("i"), 1, (LPRECT)&rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOCLIP);
+	dc.SelectFont(oldFont);
+}
+
+- store entries in db by hash or something
+- Image similarity
+- merge functionality
+- numbered tags
+- elo ranking
+- elo ranking per tag?
+- Where does it save settings? CParameterDB::SaveToFile Should store in db instead.
+	sParamDBName = L"C:\\Users\\jitspoe\\AppData\\Roaming\\JPEGView\\ParamDB.db"
+- Convert to webp option (and a place to move original)
+- Different tag categories, ex: reference:face:nose, style, series, artist(with different user ids for different sites:bsky, pixiv, etc), maybe enum types (ex: photo,sketch,painting)
+- Grouping (with order) for comics/series.
+- Crop selection to add to similarity check.

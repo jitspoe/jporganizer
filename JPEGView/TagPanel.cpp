@@ -30,10 +30,10 @@ CTagPanel::CTagPanel(HWND hWnd, INotifiyMouseCapture* pNotifyMouseCapture, CPane
 	int tagIndex = 0;
 
 
-	AddButton(ID_btnCustomTag, _T("Custom tag test button"), OnTagButtonPressed, this, tagIndex);
+	AddButton(ID_btnCustomTag, _T("Custom tag"), OnTagButtonPressed, this, tagIndex);
 	//AddText(tagIndex, _T("Test Tag but with some more words now"), true);
 	AddUserPaintButton(ID_btnAddTag, GetTooltip(keyMap, _T("Add tag"), IDM_ADD_TAG), &PaintAddTagBtn);
-	AddUserPaintButton(ID_btnPrev, GetTooltip(keyMap, _T("Show previous image"), IDM_PREV), &PaintPrevBtn);
+	AddButton(ID_btnPrev, _T("<"));
 	AddGap(ID_gap1, 4);
 	AddUserPaintButton(ID_btnNext, GetTooltip(keyMap, _T("Show next image"), IDM_NEXT), &PaintNextBtn);
 	AddUserPaintButton(ID_btnEnd, GetTooltip(keyMap, _T("Show last image in folder"), IDM_LAST), &PaintEndBtn);
@@ -81,9 +81,18 @@ CRect CTagPanel::PanelRect() {
 		int nNumButtons = 0;
 		int nTotalGap = 0;
 		ControlsIterator iter;
+		int nButtonVerticalSize = m_nHeight - m_nBorder;
+		int nMinButtonSize = nButtonVerticalSize;
+		int nTotalButtonSize = 0;
 		for (iter = m_controls.begin( ); iter != m_controls.end( ); iter++ ) {
-			if (dynamic_cast<CButtonCtrl*>(iter->second) != NULL) {
+			CButtonCtrl* pButton = dynamic_cast<CButtonCtrl*>(iter->second);
+			if (pButton != NULL) {
+				int nButtonSize = pButton->GetMinSize().cx;
+				if (nButtonSize < nMinButtonSize) {
+					nButtonSize = nMinButtonSize;
+				}
 				nNumButtons++;
+				nTotalButtonSize += nButtonSize;
 			} else {
 				CGapCtrl* pGapCtrl = dynamic_cast<CGapCtrl*>(iter->second);
 				if (pGapCtrl != NULL) {
@@ -91,10 +100,10 @@ CRect CTagPanel::PanelRect() {
 				}
 			}
 		}
-		int nButtonSize = m_nHeight - m_nBorder;
-		m_nWidth = m_nBorder * 2 + (nNumButtons - 1) * m_nGap + nNumButtons * nButtonSize + nTotalGap;
+		m_nWidth = m_nBorder * 2 + (nNumButtons - 1) * m_nGap + nTotalButtonSize + nTotalGap;
 	}
 
+	// TODO: Image info exif panel instead - make sure we're to the right of that.
 	CRect imageProcPanelRect = m_pImageProcPanel->PanelRect();
 	int x = (imageProcPanelRect.right + imageProcPanelRect.left - m_nWidth) / 2;
 	int y = 2;
@@ -119,14 +128,19 @@ void CTagPanel::RequestRepositioning() {
 
 void CTagPanel::RepositionAll() {
 	m_clientRect = PanelRect();
-	int nButtonSize = m_nHeight - m_nBorder;
+	int nButtonVerticalSize = m_nHeight - m_nBorder;
+	int nMinButtonSize = nButtonVerticalSize;
 	int nStartX = m_clientRect.left + m_nBorder;
 	int nStartY = m_clientRect.top + m_nBorder/2;
 	ControlsIterator iter;
 	for (iter = m_controls.begin( ); iter != m_controls.end( ); iter++ ) {
 		CButtonCtrl* pButton = dynamic_cast<CButtonCtrl*>(iter->second);
 		if (pButton != NULL) {
-			pButton->SetPosition(CRect(CPoint(nStartX, nStartY), CSize(nButtonSize, nButtonSize)));
+			int nButtonSize = pButton->GetMinSize().cx;
+			if (nButtonSize < nMinButtonSize) {
+				nButtonSize = nMinButtonSize;
+			}
+			pButton->SetPosition(CRect(CPoint(nStartX, nStartY), CSize(nButtonSize, nButtonVerticalSize)));
 			nStartX += nButtonSize + m_nGap;
 		} else {
 			CGapCtrl* pGap = dynamic_cast<CGapCtrl*>(iter->second);
